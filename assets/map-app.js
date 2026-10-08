@@ -317,6 +317,7 @@
       $detail.appendChild(ph);
     }
 
+    var googlePlace=document.createElement('a');googlePlace.className='act google-place';googlePlace.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([r.name,r.address].filter(Boolean).join(' '));googlePlace.target='_blank';googlePlace.rel='noopener noreferrer';googlePlace.textContent='この場所をGoogleマップで開く ↗';$detail.appendChild(googlePlace);
     /* 操作ボタンの列 */
     var act = el("div", "actions");
     if (hasPin(r)) {

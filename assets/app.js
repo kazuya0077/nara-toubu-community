@@ -342,6 +342,7 @@
       $detail.appendChild(ph);
     }
 
+    var googlePlace=document.createElement('a');googlePlace.className='act google-place';googlePlace.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([r.name,r.address].filter(Boolean).join(' '));googlePlace.target='_blank';googlePlace.rel='noopener noreferrer';googlePlace.textContent='この場所をGoogleマップで開く ↗';$detail.appendChild(googlePlace);
     /* 操作ボタンの列 */
     var manageActions = el("details", "detail-management");
     manageActions.appendChild(el("summary", null, "情報の修正・報告（この端末に保存）"));
@@ -530,6 +531,7 @@
       var cats = PURPOSES[b.dataset.purpose];
       b.setAttribute("aria-pressed", state.cats.size === cats.length && cats.every(function (c) { return state.cats.has(c); }) ? "true" : "false");
     });
+    window.dispatchEvent(new Event('toubu-search-change'));
     var labels = D.categories.filter(function(c) { return state.cats.has(c.id); }).map(function(c) { return c.label; });
     document.getElementById("search-summary").textContent = "検索条件：" + (labels.join("・") || "すべての種類") + " ／ " + (Array.from(state.areas).join("・") || "全地区") + (state.q ? " ／ キーワード「" + state.q + "」" : "") + (state.days.size ? " ／ " + Array.from(state.days).map(function(d) { return WEEK[d]; }).join("・") + "曜" : "") + (state.today ? " ／ 今日の開催予定" : "");
     document.getElementById("quick-category").value = state.cats.size === 1 ? Array.from(state.cats)[0] : "";
@@ -1355,7 +1357,7 @@
     else {
       document.getElementById("search-options").open = false;
       setView("list");
-      document.getElementById("search-summary").scrollIntoView({block:"start"});
+      window.scrollTo(0,0);
     }
   });
   document.getElementById("search-back").addEventListener("click",function (event) {
@@ -1370,8 +1372,8 @@
     // ホームで選んだ内容の結果から読み始められるようにする。
     requestAnimationFrame(function () {
       var summary = document.getElementById("search-summary");
-      summary.focus({preventScroll:true});
-      summary.scrollIntoView({block:"start"});
+      
+      window.scrollTo(0,0);
     });
   }
 })();

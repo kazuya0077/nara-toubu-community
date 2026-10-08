@@ -50,18 +50,19 @@
   var dialog=document.getElementById('user-dialog'), areaInput=document.getElementById('calendar-area');
   var legend=element('div','','district-legend');legend.setAttribute('role','group');legend.setAttribute('aria-label','地区の色と絞り込み');
   var legendTitle=element('p','7地区の色（地区名を押して絞り込み）','legend-title');
-  areaInput.closest('label').after(legendTitle,legend);
+  areaInput.after(legendTitle,legend);
   [''].concat(data.districts).forEach(function(area){
     var b=element('button',area || '全地区');b.type='button';b.dataset.area=area;
     if(area){var dot=element('span','','district-dot');dot.style.backgroundColor=districtColors[area];dot.setAttribute('aria-hidden','true');b.prepend(dot);}
     b.addEventListener('click',function(){areaInput.value=area;selectedDay=null;renderMonth();});legend.appendChild(b);
   });
   function showProfile() {
-    document.getElementById('user-greeting').textContent=profile.name ? profile.name+'さん、こんにちは。' : '東部地域の情報を、あなたの手元に。';
+    document.getElementById('user-greeting').textContent=profile.saved ? profile.name+'さん ／ '+(profile.area||'地区未選択')+'で登録中' : '東部地域の情報を、あなたの手元に。';
     document.getElementById('open-user').textContent=profile.saved ? '登録内容を確認' : '押すとユーザー登録';
     document.getElementById('user-name').value=typeof profile.name==='string' ? profile.name : '';
-    document.getElementById('user-area').value=data.districts.includes(profile.area) ? profile.area : '';
+    document.getElementById('user-area').value=data.districts.concat('それ以外').includes(profile.area) ? profile.area : '';
     areaInput.value=data.districts.includes(profile.area) ? profile.area : '';
+    window.dispatchEvent(new Event('toubu-profile-change'));
   }
   document.getElementById('open-user').addEventListener('click',function () {document.getElementById('user-status').textContent='';dialog.showModal();});
   document.getElementById('close-user').addEventListener('click',function () {dialog.close();});
@@ -69,7 +70,8 @@
   clearProfile.addEventListener('click',function(){try{localStorage.removeItem(profileKey);profile={};showProfile();selectedDay=null;renderMonth();document.getElementById('user-status').textContent='この端末の登録を解除しました。';}catch(e){document.getElementById('user-status').textContent='解除できませんでした。ブラウザの保存設定をご確認ください。';}});
   document.getElementById('user-form').addEventListener('submit',function (e) {
     e.preventDefault(); var next={name:document.getElementById('user-name').value.trim(),area:document.getElementById('user-area').value,saved:true};
-    try {localStorage.setItem(profileKey,JSON.stringify(next));profile=next;showProfile();selectedDay=null;renderMonth();document.getElementById('user-status').textContent='この端末に保存しました。閉じるボタンで戻れます。';}
+    if(!next.name){document.getElementById('user-status').textContent='呼び名を入力してください。';return;}
+    try {localStorage.setItem(profileKey,JSON.stringify(next));profile=next;showProfile();selectedDay=null;renderMonth();dialog.close();document.getElementById('open-user').focus();}
     catch (error) {document.getElementById('user-status').textContent='保存できませんでした。登録せずにそのまま情報を探せます。';}
   });
   var parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'numeric'}).formatToParts(new Date());
@@ -127,4 +129,5 @@
   document.getElementById('month-more').addEventListener('click',function(){document.getElementById('month-list').classList.add('show-all');this.hidden=true;});
   document.getElementById('calendar-toggle').addEventListener('click',function(){var view=document.getElementById('calendar-view');view.hidden=!view.hidden;this.setAttribute('aria-expanded',String(!view.hidden));this.textContent=view.hidden?'カレンダーを開く':'カレンダーを閉じる';});
   showProfile();renderMonth();showPanel();
+  if(location.hash==='#register')dialog.showModal();
 })();
