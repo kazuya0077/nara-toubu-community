@@ -129,5 +129,6 @@
   document.getElementById('month-more').addEventListener('click',function(){document.getElementById('month-list').classList.add('show-all');this.hidden=true;});
   document.getElementById('calendar-toggle').addEventListener('click',function(){var view=document.getElementById('calendar-view');view.hidden=!view.hidden;this.setAttribute('aria-expanded',String(!view.hidden));this.textContent=view.hidden?'カレンダーを開く':'カレンダーを閉じる';});
   showProfile();renderMonth();showPanel();
+  window.addEventListener('storage',function(e){if(e.key===profileKey||e.key===null){try{profile=JSON.parse(localStorage.getItem(profileKey)||'{}')||{};}catch(error){profile={};}showProfile();selectedDay=null;renderMonth();}});
   if(location.hash==='#register')dialog.showModal();
 })();
