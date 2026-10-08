@@ -1,0 +1,9 @@
+html{font-size:18px}html[data-text-size=large]{font-size:22px}
+.reading-tools{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;color:#273d33;font:inherit;font-size:.88rem}
+.reading-tools button{font:inherit;min-height:48px;min-width:60px;border:1px solid #7f9989;border-radius:5px;background:#fff;color:#285e47;padding:8px 12px;cursor:pointer}
+.reading-tools button[aria-pressed=true]{background:#285e47;color:white;font-weight:700}
+.reading-tools button:focus-visible{outline:3px solid #9e4c13;outline-offset:3px}
+html[data-text-size=large] .hero{grid-template-columns:1.4fr 1fr}
+html[data-text-size=large] .hero h1{font-size:2rem}
+@media(max-width:720px){.reading-tools{font-size:.82rem}.reading-tools button{min-height:48px;padding:8px 10px}.community-home .reading-tools{width:100%;justify-content:flex-end}html[data-text-size=large] .hero h1{font-size:1.6rem}html[data-text-size=large] .purpose-link>svg{display:none}html[data-text-size=large] .districts{display:block;text-align:center}html[data-text-size=large] .districts svg{height:170px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>東部社会資源マップ</title>
+<meta name="description" content="奈良市東部7地区（月ヶ瀬・狭川・都祁・東里・柳生・大柳生・田原）の社会資源を地図からさがせます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- 地図は画面いっぱい。UI はその上に浮かせる（Google マップと同じ構成） -->
+  <div id="mapwrap">
+    <div id="map"></div>
+    <div class="map-mode"><button id="btn-basemap" class="chip solid" aria-pressed="false">7地区の概略図に切替</button><span id="map-mode-label">広域地図：伊賀・木津川なども表示</span></div>
+    <div class="map-ctrl">
+      <button class="iconbtn" id="btn-mapfit" title="全体を表示" aria-label="全体を表示">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+      <div class="zoomgroup">
+        <button class="iconbtn" id="zoom-in" aria-label="拡大">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="iconbtn" id="zoom-out" aria-label="縮小">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 左に浮かぶパネル -->
+  <div id="ui">
+    <section class="region-panel" aria-label="奈良市東部7地区から探す">
+      <h1>奈良市東部 社会資源マップ</h1>
+      <p>利用したい地区を選択（施設の所在地ではありません）</p>
+      <strong class="area-filter-title">東部7地区のどこで利用できますか？</strong>
+      <div class="chip-group" id="area-chips"></div>
+      <div class="resource-shortcuts"><select id="quick-category" aria-label="資源の種類から探す"><option value="">すべての地域資源</option></select></div>
+      <button class="chip cafe-shortcut" id="btn-cafe" aria-pressed="false">オレンジカフェを探す</button>
+    </section>
+    <div class="searchbar">
+      <svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <input id="q" type="text" placeholder="場所・サービスをさがす" aria-label="キーワードで探す">
+      <button class="iconbtn ghost" id="btn-reset" title="条件をクリア" aria-label="条件をクリア">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="chiprow">
+      <button class="chip solid" id="btn-filters" aria-expanded="false">絞り込み</button>
+      <button class="chip solid" id="btn-today" aria-pressed="false">今日の開催予定</button>
+      <button class="chip solid" id="btn-register">＋ 登録</button>
+      <button class="chip solid" id="btn-pending">位置未確定 <span id="pending-count"></span></button>
+      <button class="chip solid" id="btn-unmapped">地図に出ない資源</button>
+      <button class="chip solid" id="btn-print">印刷</button>
+    </div>
+
+    <div class="filterpanel" id="filterpanel" hidden>
+      <div class="fgroup"><span class="flabel">種類</span><div class="chip-group" id="cat-chips"></div></div>
+      <div class="fgroup"><span class="flabel">曜日</span><div class="chip-group" id="day-chips"></div></div>
+    </div>
+
+    <section id="panel" aria-label="資源の一覧">
+      <button type="button" class="sheet-grip" aria-label="一覧の高さを変える"><span></span></button>
+      <div class="panel-head">
+        <span class="count" aria-live="polite"><b id="count">—</b> 件</span>
+        <span class="hint-sm">ピンか一覧をえらぶと、くわしい内容が出ます</span>
+      </div>
+      <p id="location-summary" class="location-summary" aria-live="polite"></p>
+      <div id="list"></div>
+    </section>
+
+    <div id="detail" hidden></div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+
+<script src="data/districts.js"></script>
+<script src="data/boundary.js"></script>
+<script src="data/resources.js"></script>
+<script src="assets/map.js"></script>
+<script src="assets/map-app.js"></script>
+</body>
+</html>

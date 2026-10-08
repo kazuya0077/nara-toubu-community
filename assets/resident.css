@@ -1,0 +1,120 @@
+/* 住民向けの表示。既存の地図・登録UIの機能は維持する。 */
+:root{--blue:#285c4d;--blue-soft:#e8f0eb;--ink:#24352e;--ink-2:#34473e;--ink-3:#4f6258;--ink-4:#596b61;--line:#c8d2ca}
+.resident{background:#f7f6f0;font-size:18px;line-height:1.75;height:auto}
+.resident [hidden]{display:none!important}
+.resident a{color:#285c4d;text-underline-offset:4px}
+.resident button,.resident summary,.resident .act{min-height:48px;cursor:pointer}
+.resident :focus-visible{outline:3px solid #92511e;outline-offset:4px}
+.skip-link{position:fixed;left:12px;top:-100px;z-index:100;background:white;padding:12px}
+.skip-link:focus{top:12px}
+.resident #app{position:static;max-width:1080px;margin:auto;padding:0 28px 32px;overflow:visible;display:block}
+.resident #ui{position:static;display:flex;flex-direction:column;width:auto;gap:20px;pointer-events:auto}
+.resident-header{padding:28px 0 8px;order:0}
+.resident-header .site-label{font-size:18px;font-weight:700;text-decoration:none}
+.resident-header nav{display:flex;flex-wrap:wrap;gap:24px;margin-top:12px}
+.resident-header nav a{display:inline-flex;align-items:center;min-height:48px}
+.resident-header h1{font-size:clamp(28px,4vw,42px);line-height:1.4;letter-spacing:.03em;margin:24px 0 14px}
+.resident-header p{max-width:42em;margin:0;color:var(--ink-2)}
+.purpose-panel{order:1;border-top:2px solid #285c4d;padding-top:20px}
+.purpose-panel h2,.resident .region-panel h2{font-size:22px;margin:0 0 12px}
+.purpose-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.purpose-buttons button{padding:16px;text-align:left;background:#fff;border:1px solid #a9bdb0;border-radius:6px;font-size:19px;font-weight:700;line-height:1.6}
+.purpose-buttons span{display:block;font-size:16px;font-weight:400;margin-top:6px;color:var(--ink-2)}
+.purpose-buttons button[aria-pressed=true]{background:#e8f0eb;border:2px solid #285c4d;padding:15px}
+.purpose-buttons button[aria-pressed=true]::before{content:'✓ '}
+.text-button{background:none;border:0;text-decoration:underline;text-underline-offset:4px;padding:8px 0;font-size:17px;color:#285c4d}
+.resident .region-panel{order:2;background:transparent;box-shadow:none;padding:0;flex:none}
+.resident .region-panel p{display:block;font-size:16px;margin:0 0 12px}
+.resident .area-filter-title{display:none}
+.resident .region-panel #area-chips{display:flex;flex-wrap:wrap;overflow:visible;gap:8px}
+.resident .region-panel #area-chips .chip{min-height:48px;font-size:17px;padding:10px 16px}
+.resident .region-panel .chip,.resident .chip{min-height:48px;font-size:17px;padding:10px 16px;border-radius:6px;white-space:normal;line-height:1.5;box-shadow:none;border:1px solid var(--line)}
+.resident .chip[aria-pressed=true]{border-color:#285c4d;font-weight:700}
+.resident .chip[aria-pressed=true]::before{content:'✓ '}
+.resident .resource-shortcuts{display:block;padding:0;border:0;margin:12px 0}
+.resident .resource-shortcuts select{font-size:18px;min-height:48px;width:100%;background:#fff}
+.resident .cafe-shortcut{margin:0}
+.resident .searchbar{order:3;border-radius:6px;box-shadow:none;border:1px solid #9aada1;padding:4px 8px 4px 16px}
+.resident .searchbar input{font-size:18px;min-height:48px}
+.resident .iconbtn.ghost{width:48px;height:48px;flex:none}
+.resident .chiprow{order:4;display:flex;flex-wrap:wrap;overflow:visible;height:auto;min-height:0;gap:8px}
+.view-controls{order:5;display:flex;flex-wrap:wrap;gap:8px}
+.view-controls button{font-size:17px;border:1px solid #9aada1;background:white;padding:10px 16px;border-radius:6px}
+.view-controls button[aria-pressed=true]{background:#285c4d;color:white}
+.view-controls #btn-clear{border:0;background:transparent;text-decoration:underline;color:#285c4d}
+.search-summary{order:6;margin:0;font-size:17px}
+.resident .filterpanel{order:7;max-height:none;box-shadow:none;border:1px solid var(--line)}
+.resident .flabel{font-size:18px}
+.resident #mapwrap{order:8;display:none;position:relative;inset:auto;min-height:0;height:460px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.resident.map-view #mapwrap{display:block}
+.resident #map{position:absolute;inset:0}
+.resident #mapwrap .map-ctrl{bottom:52px;right:12px}
+.resident #mapwrap .map-attribution{bottom:8px;right:8px;font-size:14px}
+.resident .map-mode{top:8px;left:8px;right:8px}
+.resident .map-mode span{font-size:15px}
+.resident .map-preview{max-width:calc(100% - 16px);left:8px;right:8px;bottom:8px;top:auto;max-height:80%;width:auto;min-width:0}
+.resident #panel{order:9;position:static;flex:none;height:auto;max-height:none;min-height:0;overflow:visible;box-shadow:none;border:1px solid var(--line);border-radius:6px;background:white;margin:0}
+.resident .sheet-grip{display:none}
+.resident .panel-head{flex-wrap:wrap;gap:8px;padding:16px}
+.resident .panel-head .count b{font-size:24px}
+.resident .panel-head .hint-sm,.resident .location-summary{font-size:16px}
+.resident #list{overflow:visible;max-height:none}
+.resident .list-group{font-size:18px;background:#edf1eb;padding:12px 16px;color:#34473e}
+.resident .card{padding:20px 16px;overflow-wrap:anywhere}
+.resident .card h3{font-size:21px;line-height:1.5}
+.resident .card .row{font-size:18px;line-height:1.7}
+.resident .cat,.resident .outside-note,.resident .warn{font-size:16px;color:var(--ink-2)}
+.resident #detail{position:fixed;inset:16px;max-width:760px;width:auto;height:auto;max-height:calc(100dvh - 32px);margin:auto;z-index:60;border:1px solid var(--line);border-radius:6px;background:white;box-shadow:0 0 0 100vmax #17291fd9;overflow:auto;padding-bottom:24px}
+.resident #detail h2{font-size:26px;line-height:1.5}
+.resident #detail .backbar{position:sticky;top:0;background:white;z-index:2}
+.resident #detail .back,.resident #detail .act{font-size:18px;min-height:48px;height:auto;white-space:normal}
+.resident #detail dl,.resident #detail dd,.resident #detail .k{font-size:18px;overflow-wrap:anywhere}
+.resident #detail .coverage-note,.resident #detail .note-box,.resident #detail .disclaimer{font-size:16px}
+.resident #detail .coverage-chips span{font-size:16px}
+.resident .detail-management{padding:16px;font-size:18px}
+.resident .detail-management summary{min-height:48px}
+.resident #detail .coverage-note,.resident #detail .note-box,.resident #detail .disclaimer,.resident .warn{font-size:18px}
+.resident #list>.btn{margin:12px 16px;min-height:48px;font-size:18px;height:auto;white-space:normal}
+.management{order:10;border-top:1px solid var(--line);padding-top:16px;font-size:16px}
+.management summary{display:list-item;font-size:17px;padding:8px}
+.management p{max-width:45em}
+.resident-footer{order:11;border-top:1px solid var(--line);padding:24px 0;font-size:16px}
+.resident-footer a{display:inline-flex;align-items:center;min-height:48px;margin-right:24px}
+.resident .modal{font-size:18px;max-width:calc(100vw - 24px)}
+@media(max-width:650px){
+ .resident #app{padding:0 16px 24px}.resident #ui{gap:16px}
+ .resident-header{padding-top:20px}.purpose-buttons{grid-template-columns:1fr}
+ .purpose-buttons button{padding:12px 14px}.purpose-buttons button[aria-pressed=true]{padding:11px 13px}
+ .purpose-buttons span{margin-top:2px}.resident #mapwrap{height:400px}
+ .resident #detail{inset:8px;max-height:calc(100dvh - 16px)}
+ .resident .panel-head{display:block}.resident .hint-sm{display:block;margin-top:4px}
+}
+@media print{.resident #app,.resident #ui{display:block;padding:0}.resident-header nav,.purpose-panel,.region-panel,.searchbar,.view-controls,.chiprow,.management,.resident-footer,.skip-link,.search-summary{display:none!important}.resident #mapwrap{display:none!important}.resident #panel{border:0}.resident #detail{position:static;box-shadow:none;max-height:none;overflow:visible}}
+/* HPから条件を引き継ぎ、結果まで短い導線にする。 */
+.resident{font-family:'BIZ UDPGothic','Yu Gothic',Meiryo,sans-serif;font-size:1rem;background:#fffdf7}
+.resident-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:20px 0}
+.resident-header nav{margin:0;gap:20px}.resident-header h1{width:100%;font-size:1.8rem;margin:8px 0 0}.resident-header p{font-size:1rem;width:100%;max-width:none}.resident-header nav a,.resident-header .site-label{font-size:.95rem}
+.search-options{order:1;border:1px solid #acbfa8;border-radius:8px;background:#f1f5ec;overflow:visible}
+.search-options>summary{padding:16px 20px;min-height:60px;font-size:1.1rem;font-weight:700;cursor:pointer;color:#285e47}
+.search-options[open]>summary{border-bottom:1px solid #cbd5c8}.search-options-body{display:flex;flex-direction:column;gap:24px;padding:24px;background:white;border-radius:0 0 8px 8px}
+.resident .purpose-panel{border:0;padding:0}.resident .purpose-panel h2,.resident .region-panel h2{font-size:1.15rem}
+.resident .purpose-buttons button{font-size:1rem;min-height:90px;border-bottom:3px solid #638453;border-radius:8px;background:#eff4e7}
+.resident .purpose-buttons button[data-purpose=life]{background:#fff0db;border-bottom-color:#a26928}.resident .purpose-buttons button[data-purpose=consult]{background:#edf2f4;border-bottom-color:#487b85}
+.resident .purpose-buttons button[aria-pressed=true]{outline:2px solid #285e47;outline-offset:2px;border:1px solid #285e47;border-bottom:3px solid #285e47;padding:16px}
+.resident .purpose-buttons span{font-size:.88rem}.resident .text-button{font-size:.95rem;min-height:48px}.resident .region-panel p{font-size:.95rem}.resident .chip,.resident .region-panel #area-chips .chip{font-size:.95rem;min-height:52px}
+.resident .resource-shortcuts select,.resident .searchbar input{font-size:1rem;min-height:52px}.resident .resource-shortcuts select{border:1px solid #91a38e}
+.resident .show-results{order:8;font:inherit;font-weight:700;font-size:1.1rem;background:#285e47;color:white;border:0;border-radius:6px;min-height:60px;padding:14px 20px;cursor:pointer}
+.resident .search-summary{font-size:1rem;padding:16px 20px;border-left:4px solid #638453;background:#f1f5ec;order:2}.resident .view-controls{order:3;align-items:center}.resident .view-controls button{font-size:.95rem;min-height:52px}.resident #mapwrap{order:4}.resident #panel{order:5}.resident .panel-head .count,.resident .panel-head .hint-sm{font-size:.95rem}.resident .panel-head .count b{font-size:1.5rem}.resident .location-summary{font-size:.85rem}.resident .list-group{font-size:1rem}.resident .card{padding:24px}.resident .card h3{font-size:1.2rem}.resident .card .row{font-size:1rem}.resident .cat,.resident .outside-note,.resident .warn{font-size:.9rem}.resident .card-open{display:block;font-size:.95rem;font-weight:700;color:#285e47;margin-top:14px;text-decoration:underline;text-underline-offset:4px}.resident .card:hover{background:#f4f7f0}
+.resident #detail h2{font-size:1.45rem}.resident #detail .back,.resident #detail .act,.resident #detail dl,.resident #detail dd,.resident #detail .k{font-size:1rem}.resident #detail .coverage-note,.resident #detail .note-box,.resident #detail .disclaimer,.resident #detail .coverage-chips span{font-size:.9rem}.resident #detail .actions{flex-wrap:wrap}.resident #detail .call-action{width:100%;justify-content:center;line-height:1.8;padding:14px;min-height:60px;background:#285e47;color:#fff}.resident #detail .backbar{min-height:60px}.resident .resident-footer{font-size:.9rem}.resident .management,.resident .management summary{font-size:.9rem}
+@media(max-width:650px){.resident #app{padding-inline:16px}.resident-header h1{font-size:1.5rem}.resident-header .reading-tools{width:100%;justify-content:flex-end}.search-options-body{padding:18px 14px;gap:20px}.search-options>summary{padding:14px;font-size:1rem}.resident .purpose-buttons{gap:12px}.resident .purpose-buttons button,.resident .purpose-buttons button[aria-pressed=true]{padding:14px;min-height:80px}.resident .region-panel #area-chips{display:grid;grid-template-columns:repeat(2,1fr)}.resident .region-panel #area-chips .chip{justify-content:center}.resident .view-controls{gap:8px}.resident .view-controls button{flex:1;min-width:40%;font-size:.9rem}.resident .search-summary{padding:12px 14px;font-size:.95rem}.resident .card{padding:20px 16px}.resident #detail .actions{display:grid;grid-template-columns:1fr}.resident #detail .act{width:100%;justify-content:center}.resident #detail .back{min-height:56px}}
+@media print{.resident .search-options,.resident .reading-tools{display:none!important}.resident .card-open{display:none}}
+.resident .search-bottom{display:none}
+@media(max-width:650px){.resident #app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}.resident .search-bottom{position:fixed;inset:auto 0 0;z-index:25;display:grid;grid-template-columns:1fr 1.2fr;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:#fffefb;border-top:1px solid #a7b59f}.resident .search-bottom a,.resident .search-bottom button{display:flex;align-items:center;justify-content:center;min-height:52px;font:inherit;font-size:.95rem;border:1px solid #285e47;border-radius:6px;text-decoration:none;padding:10px 8px;line-height:1.5}.resident .search-bottom button{background:#285e47;color:#fff}html{scroll-padding-bottom:100px}}
+@media print{.resident .search-bottom{display:none!important}}
+.resident .result-tools{display:flex;gap:8px;margin-left:auto}.resident .result-tools button{font:inherit;font-size:.9rem;min-height:48px;background:#fff;color:#285e47;border:1px solid #9aada1;border-radius:6px;padding:8px 12px;cursor:pointer}.resident .panel-head .hint-sm{width:100%}.resident:not(.map-view) .location-summary{display:none}
+@media(max-width:650px){.resident .panel-head{display:flex;align-items:center;justify-content:space-between}.resident .result-tools button{padding:8px;font-size:.85rem}.resident .hint-sm{margin-top:0}}
+@media print{.resident .result-tools{display:none!important}}
+.resident #panel .hint-sm{display:block}
+/* 旧マップの一覧シートの重なり順を解除し、下部メニューを常に押せるようにする。 */
+.resident #panel{z-index:auto}
+.resident .search-bottom{position:fixed;inset:auto 0 0;z-index:25;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:4px 4px calc(4px + env(safe-area-inset-bottom));background:#fffefb;border-top:1px solid #a7b59f}.resident .search-bottom a{display:flex;align-items:center;justify-content:center;min-height:64px;font:inherit;font-size:.9rem;font-weight:700;color:#285e47;border:0;border-right:1px solid #cbd5c8;border-radius:0;text-decoration:none;padding:8px 4px}.resident .search-bottom a:last-child{border:0}.resident #app{padding-bottom:100px}.resident .result-tools{flex-wrap:wrap}@media print{.resident .search-bottom{display:none!important}}
