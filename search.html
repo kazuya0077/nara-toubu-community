@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>集まり・暮らしの助けを探す｜東部地域</title>
+<meta name="description" content="奈良市東部7地区（月ヶ瀬・狭川・都祁・東里・柳生・大柳生・田原）の社会資源を地図からさがせます。">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/resident.css">
+<link rel="stylesheet" href="assets/reading.css">
+<script src="assets/reading.js" defer></script>
+<link rel="stylesheet" href="assets/community-feed.css"></head>
+<body class="resident">
+<a class="skip-link" href="#panel">検索結果へ進む</a>
+
+<div id="app">
+
+  <!-- 地図は画面いっぱい。UI はその上に浮かせる（Google マップと同じ構成） -->
+  <div id="mapwrap">
+    <div id="map"></div>
+    <div class="map-mode"><button id="btn-basemap" class="chip solid" aria-pressed="false">7地区の概略図に切替</button><span id="map-mode-label">広域地図：伊賀・木津川なども表示</span></div>
+    <div class="map-ctrl">
+      <button class="iconbtn" id="btn-mapfit" title="全体を表示" aria-label="全体を表示">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+      <div class="zoomgroup">
+        <button class="iconbtn" id="zoom-in" aria-label="拡大">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="iconbtn" id="zoom-out" aria-label="縮小">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 左に浮かぶパネル -->
+  <div id="ui">
+    <header class="resident-header">
+      <nav aria-label="サイト案内"><a class="site-label" href="about.html">← 東部地域のホームへ</a><a href="about.html#guide">使い方</a></nav>
+      <div class="reading-tools" role="group" aria-label="文字の大きさ"><span>文字の大きさ</span><button type="button" data-text-size="standard" aria-pressed="true">標準</button><button type="button" data-text-size="large" aria-pressed="false">大きく</button></div>
+      <h1>地域の情報を探す</h1>
+      <p>名前を押すと、詳しい内容が開きます。</p>
+    </header>
+    <details class="search-options" id="search-options" open>
+    <summary>探す条件を選ぶ・変更する</summary>
+    <div class="search-options-body">
+    <section class="purpose-panel" aria-labelledby="purpose-title">
+      <h2 id="purpose-title">1. 目的を選ぶ</h2>
+      <div class="purpose-buttons">
+        <button type="button" data-purpose="meet" aria-pressed="false">集まりに参加したい<span>体操・おしゃべり・カフェなど</span></button>
+        <button type="button" data-purpose="life" aria-pressed="false">暮らしの助けがほしい<span>食事・買い物・移動など</span></button>
+        <button type="button" data-purpose="consult" aria-pressed="false">困りごとを相談したい<span>暮らし・介護の相談窓口</span></button>
+      </div>
+      <button type="button" class="text-button" id="btn-all-purpose">すべての種類を見る</button>
+    </section>
+    <section class="region-panel" aria-label="奈良市東部7地区から探す">
+      <h2>2. 地区を選ぶ（選ばなくても探せます）</h2>
+      <p>複数選べます。その地区で利用できる情報を探します。</p>
+      <strong class="area-filter-title">東部7地区のどこで利用できますか？</strong>
+      <div class="chip-group" id="area-chips"></div>
+      <button type="button" class="text-button" id="btn-all-areas">全地区で探す・地区がわからない</button>
+      <div class="resource-shortcuts"><select id="quick-category" aria-label="資源の種類から探す"><option value="">すべての地域資源</option></select></div>
+      <button class="chip cafe-shortcut" id="btn-cafe" aria-pressed="false">オレンジカフェを探す</button>
+    </section>
+    <div class="searchbar">
+      <svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <input id="q" type="text" placeholder="場所・サービスをさがす" aria-label="キーワードで探す">
+      <button class="iconbtn ghost" id="btn-reset" title="条件をクリア" aria-label="条件をクリア">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="chiprow">
+      <button class="chip solid" id="btn-filters" aria-expanded="false">絞り込み</button>
+      <button class="chip solid" id="btn-today" aria-pressed="false">今日の開催予定</button>
+      <button class="chip solid" id="btn-unmapped">巡回・配達・場所が未確認の情報</button>
+    </div>
+    <div class="filterpanel" id="filterpanel" hidden>
+      <div class="fgroup"><span class="flabel">種類</span><div class="chip-group" id="cat-chips"></div></div>
+      <div class="fgroup"><span class="flabel">曜日</span><div class="chip-group" id="day-chips"></div></div>
+    </div>
+    <button type="button" id="btn-show-results" class="show-results">この条件で探す <span id="results-count"></span> →</button>
+    </div></details>
+    <div class="view-controls" role="group" aria-label="表示方法">
+      <button type="button" id="btn-view-list" aria-pressed="true">一覧で見る</button>
+      <button type="button" id="btn-view-map" aria-pressed="false">地図で見る</button>
+    </div>
+    <p id="search-summary" class="search-summary" aria-live="polite" tabindex="-1"></p>
+
+    <section id="panel" aria-label="検索結果の一覧" tabindex="-1">
+      <button type="button" class="sheet-grip" aria-label="一覧の高さを変える"><span></span></button>
+      <div class="panel-head">
+        <span class="count" aria-live="polite"><b id="count">—</b> 件</span>
+        <div class="result-tools"><button type="button" id="btn-edit-conditions">条件を変更する</button><button type="button" id="btn-clear" aria-label="検索条件をすべて解除">条件を解除</button><button type="button" id="btn-print">印刷</button></div>
+        <span class="hint-sm">名前を選ぶと、日時・料金・連絡先が見られます</span>
+      </div>
+      <p id="location-summary" class="location-summary" aria-live="polite"></p>
+      <div id="list"></div>
+    </section>
+
+    <div id="detail" hidden></div>
+    <details class="management"><summary>掲載情報の登録・管理</summary>
+      <p>登録・修正はこの端末に保存されます。運営への送信や、他の人の画面への反映は行われません。</p>
+      <button class="chip" id="btn-register">情報を登録する</button>
+      <button class="chip" id="btn-pending">位置未確定 <span id="pending-count"></span></button>
+    </details>
+    <footer class="resident-footer"><p>日時や料金は変わることがあります。利用前に各窓口へご確認ください。</p><a href="about.html">この取り組みについて</a><a href="about.html#support">活動を応援するには</a></footer>
+    <nav class="search-bottom" aria-label="検索のメニュー"><a href="about.html" id="search-back">← 戻る</a><a href="about.html#top">HOME</a><a href="about.html#timeline">タイムライン</a><a href="about.html#places">通いの場</a></nav>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+
+<script src="data/districts.js"></script>
+<script src="data/boundary.js"></script>
+<script src="data/resources.js"></script>
+<script src="assets/map.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
