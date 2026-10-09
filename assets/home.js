@@ -25,7 +25,7 @@
       body.appendChild(node('p', when + (s.start ? ' ' + s.start + (s.end ? '〜' + s.end : '〜') : '')));
     }
     if (item.fee) body.appendChild(node('p', '料金：' + item.fee));
-    var link = node('a', '詳しい内容を見る →'); link.href = 'search.html?v=9815ff9fc8e7#?id=' + encodeURIComponent(item.id);
+    var link = node('a', '詳しい内容を見る →'); link.href = 'search.html?v=fb4dc180f806#?id=' + encodeURIComponent(item.id);
     link.setAttribute('aria-label', item.name + 'の詳しい内容を見る'); body.appendChild(link); article.appendChild(body); list.appendChild(article);
   });
   document.getElementById('featured').hidden = !list.children.length;

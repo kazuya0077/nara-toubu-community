@@ -6,7 +6,7 @@
   const render=()=>{
     const p=window.ToubuPreferences.profile(),registered=window.ToubuPreferences.registered();
     const img=document.getElementById('header-user-photo'),avatar=document.querySelector('.user-entry .user-avatar');
-    if(img){const visible=registered&&validPhoto(p.photo);img.hidden=!visible;if(visible){img.src=p.photo;img.alt=window.ToubuPreferences.displayName(p.name)+'の写真';}else{img.removeAttribute('src');img.alt='';}if(avatar)avatar.hidden=visible;}
+    if(img){const visible=registered&&validPhoto(p.photo);img.hidden=!visible;if(visible){img.src=p.photo;img.alt=window.ToubuPreferences.displayName(p.name)+'の写真';}else{img.removeAttribute('src');img.alt='';}if(avatar)avatar.toggleAttribute('hidden',visible);}
     measure();
   };
   window.addEventListener('toubu-profile-change',render);window.addEventListener('storage',render);window.addEventListener('pageshow',render);render();
