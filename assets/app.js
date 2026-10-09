@@ -528,7 +528,7 @@
     });
   }
   function syncChips() {
-    document.querySelectorAll("[data-purpose]").forEach(function (b) {
+    document.querySelectorAll(".purpose-buttons button[data-purpose]").forEach(function (b) {
       var cats = PURPOSES[b.dataset.purpose];
       b.setAttribute("aria-pressed", state.cats.size === cats.length && cats.every(function (c) { return state.cats.has(c); }) ? "true" : "false");
     });
@@ -1302,7 +1302,7 @@
   });
 
   /* ---------------- 起動 ---------------- */
-  document.querySelectorAll("[data-purpose]").forEach(function (b) {
+  document.querySelectorAll(".purpose-buttons button[data-purpose]").forEach(function (b) {
     b.addEventListener("click", function () { state.cats = new Set(PURPOSES[b.dataset.purpose]); refresh(); });
   });
   document.getElementById("btn-show-results").addEventListener("click", function () {
