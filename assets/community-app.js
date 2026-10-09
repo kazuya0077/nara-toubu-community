@@ -35,7 +35,7 @@
   data.districts.forEach(function (area) {
     var card = element('article','','district-card'); card.appendChild(element('h2',area));
     card.appendChild(element('p', data.resources.filter(function (r) { return (r.areas || []).includes(area); }).length + '件の地域情報'));
-    [['地区の情報を見る','search.html?v=3cd38eef98df#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=3cd38eef98df#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
+    [['地区の情報を見る','search.html?v=24751641e154#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=24751641e154#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
     document.getElementById('district-cards').appendChild(card);
   });
   ['cafe-04','tsudoi-02','cafe-05'].forEach(function (id) {
@@ -43,7 +43,7 @@
     var card=element('article','','featured-card'), body=element('div','','featured-body');
     card.appendChild(element('p',(r.areas || []).join('・') + ' ／ 活動の案内','featured-top'));
     body.appendChild(element('h2',r.name));body.appendChild(element('p',r.address));
-    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=3cd38eef98df#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
+    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=24751641e154#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
   });
   var profileKey='toubu.user-preferences.v1', profile={};
   try { profile=JSON.parse(localStorage.getItem(profileKey) || '{}') || {}; } catch (e) {}
@@ -114,7 +114,7 @@
       if(r.schedule.start)card.appendChild(element('p',r.schedule.start+(r.schedule.end?'〜'+r.schedule.end:'〜')));
       if(r.schedule.note)card.appendChild(element('p',r.schedule.note));
       if(!selectedDay){var details=element('details',''),summary=element('summary','開催予定日（'+item.dates.length+'日）');details.appendChild(summary);details.appendChild(element('p',item.dates.map(function(d){return d+'日';}).join('・')));card.appendChild(details);}
-      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=3cd38eef98df#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
+      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=24751641e154#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
     });
     if(!list.children.length)list.appendChild(element('p','この条件で日付を表示できる集まりはありません。日程が未定の集まりは、下のリンクから探せます。'));
     document.getElementById('month-more').hidden=list.children.length<=6;
