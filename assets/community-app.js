@@ -33,17 +33,17 @@
   });
   function element(tag,text,className) { var n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; }
   data.districts.forEach(function (area) {
-    var card = element('article','','district-card'); card.appendChild(element('h2',area));
+    var card = element('article','','district-card');card.dataset.area=area; card.appendChild(element('h2',area));
     card.appendChild(element('p', data.resources.filter(function (r) { return (r.areas || []).includes(area); }).length + '件の地域情報'));
-    [['地区の情報を見る','search.html?v=9b7a7c9b76ca#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=9b7a7c9b76ca#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
+    [['地区の情報を見る','search.html?v=1b96ce995e35#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=1b96ce995e35#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
     document.getElementById('district-cards').appendChild(card);
   });
   ['cafe-04','tsudoi-02','cafe-05'].forEach(function (id) {
     var r = data.resources.find(function (item) {return item.id === id;}); if (!r) return;
     var card=element('article','','featured-card'), body=element('div','','featured-body');
-    card.appendChild(element('p',(r.areas || []).join('・') + ' ／ 活動の案内','featured-top'));
+    card.dataset.areas=(r.areas||[]).join(',');card.appendChild(element('p',(r.areas || []).join('・') + ' ／ 活動の案内','featured-top'));
     body.appendChild(element('h2',r.name));body.appendChild(element('p',r.address));
-    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=9b7a7c9b76ca#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
+    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=1b96ce995e35#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
   });
   var profileKey='toubu.user-preferences.v1', profile={};
   try { profile=JSON.parse(localStorage.getItem(profileKey) || '{}') || {}; } catch (e) {}
@@ -62,6 +62,7 @@
     document.getElementById('user-name').value=typeof profile.name==='string' ? profile.name : '';
     document.getElementById('user-area').value=data.districts.concat('それ以外').includes(profile.area) ? profile.area : '';
     areaInput.value=data.districts.includes(profile.area) ? profile.area : '';
+    var preferred=window.ToubuPreferences.area();[['district-cards','.district-card'],['bulletin-list','.featured-card']].forEach(function(pair){var container=document.getElementById(pair[0]);Array.from(container.querySelectorAll(pair[1])).sort(function(a,b){return Number((b.dataset.area||b.dataset.areas||'').split(',').includes(preferred))-Number((a.dataset.area||a.dataset.areas||'').split(',').includes(preferred));}).forEach(function(card){container.appendChild(card);});});
     window.dispatchEvent(new Event('toubu-profile-change'));
   }
   document.getElementById('open-user').addEventListener('click',function () {document.getElementById('user-status').textContent='';dialog.showModal();});
@@ -79,7 +80,7 @@
   var resources=data.resources.filter(function(r){return ['tsudoi','cafe','event'].includes(r.category);});
   function renderMonth() {
     var count=new Date(year,month+1,0).getDate(), area=areaInput.value;
-    var filtered=resources.filter(function(r){return !area || (r.areas || []).includes(area);});
+    var filtered=resources.filter(function(r){return !area || (r.areas || []).includes(area);}).sort(window.ToubuPreferences.resources);
     legend.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.area===area));});
     var scheduled=filtered.map(function(r){var dates=[];for(var d=1;d<=count;d++){if(window.ToubuCalendar.occurs(r.schedule,new Date(year,month,d)))dates.push(d);}return {resource:r,dates:dates};});
     document.getElementById('month-label').textContent=year+'年'+(month+1)+'月';
@@ -100,12 +101,12 @@
         var mark=element('span','','district-dot');mark.style.backgroundColor=districtColors[district];mark.title=district+'：'+districtCount+'件';marks.appendChild(mark);
       });
       button.appendChild(marks);
-      button.setAttribute('aria-label',(month+1)+'月'+day+'日、'+amount+'件の開催予定'+(dayAreas.length?'。利用できる地区：'+dayAreas.join('・'):''));button.setAttribute('aria-pressed',String(day===selectedDay));
+      button.setAttribute('aria-label',window.ToubuPreferences.dateLabel(year,month,day)+'、'+amount+'件の開催予定'+(dayAreas.length?'。利用できる地区：'+dayAreas.join('・'):''));button.setAttribute('aria-pressed',String(day===selectedDay));
       button.addEventListener('click',function(e){selectedDay=Number(e.currentTarget.dataset.day);renderMonth();document.getElementById('month-list-title').focus({preventScroll:true});document.getElementById('month-list-title').scrollIntoView({block:'start'});});grid.appendChild(button);
     }
     var list=document.getElementById('month-list');list.replaceChildren();
     list.classList.remove('show-all');
-    document.getElementById('month-list-title').textContent=selectedDay ? (month+1)+'月'+selectedDay+'日の開催予定' : (month+1)+'月の集まり';
+    document.getElementById('month-list-title').textContent=selectedDay ? window.ToubuPreferences.dateLabel(year,month,selectedDay)+'の開催予定' : (month+1)+'月の集まり';
     document.getElementById('calendar-all').hidden=!selectedDay;
     scheduled.filter(function(item){return selectedDay ? item.dates.includes(selectedDay) : item.dates.length;}).forEach(function(item){
       var r=item.resource,card=element('article','','month-card'),badges=element('div','','district-badges');
@@ -113,8 +114,8 @@
       card.appendChild(badges);card.appendChild(element('h4',r.name));
       if(r.schedule.start)card.appendChild(element('p',r.schedule.start+(r.schedule.end?'〜'+r.schedule.end:'〜')));
       if(r.schedule.note)card.appendChild(element('p',r.schedule.note));
-      if(!selectedDay){var details=element('details',''),summary=element('summary','開催予定日（'+item.dates.length+'日）');details.appendChild(summary);details.appendChild(element('p',item.dates.map(function(d){return d+'日';}).join('・')));card.appendChild(details);}
-      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=9b7a7c9b76ca#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
+      var dateLine=element('p',(selectedDay?[selectedDay]:item.dates).map(function(d){return window.ToubuPreferences.dateLabel(year,month,d);}).join('・'),'event-dates');card.appendChild(dateLine);
+      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=1b96ce995e35#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
     });
     if(!list.children.length)list.appendChild(element('p','この条件で日付を表示できる集まりはありません。日程が未定の集まりは、下のリンクから探せます。'));
     document.getElementById('month-more').hidden=list.children.length<=6;

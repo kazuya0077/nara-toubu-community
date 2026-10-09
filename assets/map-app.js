@@ -121,6 +121,7 @@
     });
   }
 
+  window.addEventListener("storage",function(e){if(e.key==="toubu.user-preferences.v1"||e.key===null)refresh();});
   /* ---------------- 地図 ---------------- */
   var map = window.createToubuMap(document.getElementById("map"), {
     districts: DISTRICTS,
@@ -217,7 +218,7 @@
       return ia - ib;
     });
     var sorted = [];
-    order.forEach(function (id) { byCat[id].forEach(function (r) { sorted.push(r); }); });
+    order.forEach(function (id) { byCat[id].sort(window.ToubuPreferences.resources).forEach(function (r) { sorted.push(r); }); });
 
     var lastCat = null;
     sorted.forEach(function (r) {
@@ -244,7 +245,7 @@
         img.alt = r.photos[0].alt || r.name + "の様子";
         card.appendChild(img);
       }
-      card.appendChild(el("h3", null, r.name));
+      card.appendChild(el("h3", "resource-name" + (r.category === "consult" ? " consultation-name" : ""), r.name));
       var badge = el("span", "cat");
       badge.innerHTML = '<span class="dot" style="background:' + cat.color + '"></span>';
       badge.appendChild(document.createTextNode(cat.label + (r.isDraft ? "（この端末で登録）" : "")));
@@ -291,7 +292,7 @@
     $detail.appendChild(bar);
 
     var head = el("div", "dhead");
-    head.appendChild(el("h2", null, r.name));
+    head.appendChild(el("h2", "resource-name" + (r.category === "consult" ? " consultation-name" : ""), r.name));
     var badge = el("span", "cat");
     badge.innerHTML = '<span class="dot" style="background:' + cat.color + '"></span>';
     badge.appendChild(document.createTextNode(
@@ -301,7 +302,7 @@
     var coverageBox=el("section", "detail-coverage");coverageBox.appendChild(el("h3",null,"東部7地区のどこで利用できる？"));
     var coverageChips=el("div","coverage-chips");
     D.districts.forEach(function(name){var listed=(r.areas||[]).indexOf(name)>=0;var mark=el("span",listed?"eligible":"not-listed",(listed?"✓ ":"")+name);mark.setAttribute("aria-label",name+(listed?"：利用可能として掲載":"：提供地区の記載なし"));coverageChips.appendChild(mark);});
-    coverageBox.appendChild(coverageChips);coverageBox.appendChild(el("p","coverage-note",r.areaNote || "色付きは利用可能として掲載されている地区です。灰色の地区は記載がないため、利用可否をお問い合わせください。"));$detail.appendChild(coverageBox);
+    coverageBox.appendChild(coverageChips);if(r.areaNote)coverageBox.appendChild(el("p","coverage-note",r.areaNote));$detail.appendChild(coverageBox);
 
     if (r.photos && r.photos.length) {
       var ph = el("div", "photos");

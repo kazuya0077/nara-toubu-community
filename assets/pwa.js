@@ -10,8 +10,17 @@
   const button = document.getElementById('pwa-install');
   const status = document.getElementById('pwa-install-status');
   let prompt;
-  const installed = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  const refresh = () => { if (button) button.hidden = !prompt || installed(); if (status && installed()) status.textContent = 'ホーム画面からアプリとして開いています。'; };
+  let installedThisSession=false;
+  const installed = () => installedThisSession || matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  let dismissed=false; try{dismissed=sessionStorage.getItem('toubu.install-dismissed')==='1';}catch{}
+  const notice=document.createElement('aside');notice.className='pwa-install-prompt';notice.hidden=true;notice.setAttribute('aria-label','アプリを追加する');
+  const add=document.createElement('a');add.href=new URL('install.html',root).href;add.textContent='ホーム画面に追加して使う →';
+  const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','追加の案内を閉じる');
+  close.onclick=()=>{dismissed=true;try{sessionStorage.setItem('toubu.install-dismissed','1');}catch{}refresh();};
+  notice.append(add,close); if(document.body.classList.contains('community-home')) document.body.append(notice);
+  const registered=()=>{try{const p=JSON.parse(localStorage.getItem('toubu.user-preferences.v1')||'{}');return p?.saved===true&&typeof p.name==='string'&&!!p.name.trim();}catch{return false;}};
+  const refresh = () => { notice.hidden=registered()||installed()||dismissed; if (button) button.hidden = !prompt || installed(); if (status && installed()) status.textContent = 'ホーム画面からアプリとして開いています。'; };
+  window.addEventListener('toubu-profile-change',refresh);window.addEventListener('storage',refresh);window.addEventListener('pageshow',refresh);matchMedia('(display-mode: standalone)').addEventListener('change',refresh);
   refresh();
   window.addEventListener('beforeinstallprompt',e => { e.preventDefault(); prompt = e; refresh(); });
   button?.addEventListener('click',async () => {
@@ -21,7 +30,7 @@
     } catch { if(status) status.textContent = '下の手順から、ホーム画面に追加してください。'; }
     prompt = null; refresh();
   });
-  window.addEventListener('appinstalled',() => { prompt = null; if(status) status.textContent = 'ホーム画面への追加が完了しました。'; refresh(); });
+  window.addEventListener('appinstalled',() => { installedThisSession=true; prompt = null; if(status) status.textContent = 'ホーム画面への追加が完了しました。'; refresh(); });
   if (!('serviceWorker' in navigator) || !window.isSecureContext) return;
   navigator.serviceWorker.register(new URL('sw.js',root),{scope:root.pathname,updateViaCache:'none'}).then(registration => {
     const showUpdate = () => {

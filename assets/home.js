@@ -6,7 +6,8 @@
     var n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n;
   }
   // 内容は正本から取得する。架空の活動、開催実績、写真は掲載しない。
-  ['cafe-04', 'tsudoi-02', 'cafe-05'].forEach(function (id) {
+  function renderFeatured(){list.replaceChildren();var chosen=window.ToubuPreferences.area()?data.resources.filter(function(r){return ['cafe','tsudoi','event'].includes(r.category);}).sort(window.ToubuPreferences.resources).slice(0,3).map(function(r){return r.id;}):['cafe-04','tsudoi-02','cafe-05'];
+  chosen.forEach(function (id) {
     var item = data.resources.find(function (r) { return r.id === id; });
     if (!item) return;
     var article = node('article', '', 'featured-card');
@@ -24,8 +25,10 @@
       body.appendChild(node('p', when + (s.start ? ' ' + s.start + (s.end ? '〜' + s.end : '〜') : '')));
     }
     if (item.fee) body.appendChild(node('p', '料金：' + item.fee));
-    var link = node('a', '詳しい内容を見る →'); link.href = 'search.html?v=9b7a7c9b76ca#?id=' + encodeURIComponent(item.id);
+    var link = node('a', '詳しい内容を見る →'); link.href = 'search.html?v=1b96ce995e35#?id=' + encodeURIComponent(item.id);
     link.setAttribute('aria-label', item.name + 'の詳しい内容を見る'); body.appendChild(link); article.appendChild(body); list.appendChild(article);
   });
   document.getElementById('featured').hidden = !list.children.length;
+  }
+  window.addEventListener('toubu-profile-change',renderFeatured);window.addEventListener('storage',function(e){if(e.key==='toubu.user-preferences.v1'||e.key===null)renderFeatured();});renderFeatured();
 })();

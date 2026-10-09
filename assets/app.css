@@ -751,3 +751,5 @@ button,input,select,textarea{font:inherit; color:inherit}
 .when-tilde{color:var(--ink-3)}
 .when-preview{margin:2px 0 16px; padding:8px 12px; border-radius:6px;
   background:var(--blue-soft); color:var(--ink-2); font-size:13px}
+
+.card .resource-name,.dhead .resource-name,#resource-title{font-weight:800!important;color:#245b45;line-height:1.65}.card .resource-name{font-size:1.3rem!important;margin:0 0 14px;border-bottom:2px solid #b8cdbb;padding-bottom:10px}.card .consultation-name,.dhead .consultation-name{color:#205b78;border-bottom-color:#aac8d6}.card:has(.consultation-name){border-left:5px solid #366b93}

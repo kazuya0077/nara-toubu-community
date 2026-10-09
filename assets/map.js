@@ -317,7 +317,7 @@
           chip.setAttribute("aria-label",name+(eligible?"：利用可能として掲載":"：提供地区の記載なし"));chips.appendChild(chip);});
         section.appendChild(chips);
         var note=document.createElement("p");note.className="coverage-note";
-        note.textContent=r.areaNote || "色付き：利用可能として掲載。灰色：記載なし（利用可否は要確認）。";section.appendChild(note);
+        if(r.areaNote){note.textContent=r.areaNote;section.appendChild(note);}
         var more=document.createElement("button");more.className="btn primary";
         more.textContent="営業時間・連絡先など詳細を見る";
         more.onclick=function(){dismissPreview();if(onSelect)onSelect(r.id);};section.appendChild(more);
