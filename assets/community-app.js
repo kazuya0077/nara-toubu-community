@@ -5,7 +5,7 @@
   var panels = Array.from(document.querySelectorAll('[data-app-panel]'));
   var tabs = Array.from(document.querySelectorAll('[data-panel]'));
   var previous = location.hash || '#top', backStack = [], returning = false;
-  var pageRoutes={find:'find.html?v=cb5083970522',monthly:'calendar.html?v=cb5083970522',calendar:'calendar.html?v=cb5083970522',support:'support.html?v=cb5083970522',personal:'support-personal.html?v=cb5083970522',corporate:'support-corporate.html?v=cb5083970522',guide:'guide.html?v=cb5083970522',participate:'participate.html?v=cb5083970522',activities:'activities.html?v=cb5083970522',information:'information.html?v=cb5083970522'};
+  var pageRoutes={find:'find.html?v=9815ff9fc8e7',monthly:'calendar.html?v=9815ff9fc8e7',calendar:'calendar.html?v=9815ff9fc8e7',support:'support.html?v=9815ff9fc8e7',personal:'support-personal.html?v=9815ff9fc8e7',corporate:'support-corporate.html?v=9815ff9fc8e7',guide:'guide.html?v=9815ff9fc8e7',participate:'participate.html?v=9815ff9fc8e7',activities:'activities.html?v=9815ff9fc8e7',information:'information.html?v=9815ff9fc8e7'};
   function showPanel() {
     var hash=location.hash.slice(1),defaultPanel=document.body.dataset.page||'top';
     if(pageRoutes[hash] && defaultPanel==='top'){location.replace(pageRoutes[hash]);return;}
@@ -22,17 +22,17 @@
     window.scrollTo(0,0);
     document.title=(heading?heading.textContent+'｜':'')+'東部地域 暮らしの案内';
   }
-  document.querySelectorAll('a[href*="about.html?v=cb5083970522#"]').forEach(function(link){link.addEventListener('click',function(e){if(document.body.dataset.page)return;var target=new URL(link.href);if(target.pathname!==location.pathname)return;e.preventDefault();if(location.hash===target.hash)showPanel();else location.hash=target.hash;});});
+  document.querySelectorAll('a[href*="about.html?v=9815ff9fc8e7#"]').forEach(function(link){link.addEventListener('click',function(e){if(document.body.dataset.page)return;var target=new URL(link.href);if(target.pathname!==location.pathname)return;e.preventDefault();if(location.hash===target.hash)showPanel();else location.hash=target.hash;});});
   window.addEventListener('hashchange',function(){if(!returning)backStack.push(previous);returning=false;previous=location.hash||'#top';showPanel();});
   document.getElementById('app-back').addEventListener('click',function(){
-    if(document.body.dataset.page){if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1)history.back();else location.href='about.html?v=cb5083970522#top';return;}
+    if(document.body.dataset.page){if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1)history.back();else location.href='about.html?v=9815ff9fc8e7#top';return;}
     var target=backStack.pop()||'#top';if(location.hash===target){showPanel();return;}returning=true;location.hash=target;
   });
   function element(tag,text,className) { var n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; }
   data.districts.forEach(function (area) {
     var card = element('article','','district-card');card.dataset.area=area; card.appendChild(element('h2',area));
     card.appendChild(element('p', data.resources.filter(function (r) { return (r.areas || []).includes(area); }).length + '件の地域情報'));
-    [['地区の情報を見る','search.html?v=cb5083970522#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=cb5083970522#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
+    [['地区の情報を見る','search.html?v=9815ff9fc8e7#?area=' + encodeURIComponent(area)],['通いの場を見る','search.html?v=9815ff9fc8e7#?cat=tsudoi&area=' + encodeURIComponent(area)]].forEach(function (pair) {var a=element('a',pair[0]+' →','text-link');a.href=pair[1];card.appendChild(a);});
     document.getElementById('district-cards').appendChild(card);
   });
   ['cafe-04','tsudoi-02','cafe-05'].forEach(function (id) {
@@ -40,7 +40,7 @@
     var card=element('article','','featured-card'), body=element('div','','featured-body');
     card.dataset.areas=(r.areas||[]).join(',');card.appendChild(element('p',(r.areas || []).join('・') + ' ／ 活動の案内','featured-top'));
     body.appendChild(element('h2',r.name));body.appendChild(element('p',r.address));
-    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=cb5083970522#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
+    var a=element('a','日時・詳しい内容を見る →');a.href='search.html?v=9815ff9fc8e7#?id='+encodeURIComponent(id);body.appendChild(a);card.appendChild(body);document.getElementById('bulletin-list').appendChild(card);
   });
   var profileKey='toubu.user-preferences.v1', profile={};
   try { profile=JSON.parse(localStorage.getItem(profileKey) || '{}') || {}; } catch (e) {}
@@ -54,8 +54,10 @@
     b.addEventListener('click',function(){areaInput.value=area;selectedDay=null;renderMonth();});legend.appendChild(b);
   });
   function showProfile() {
-    document.getElementById('user-greeting').textContent=profile.saved ? profile.name+'さん ／ '+(profile.area||'地区未選択')+'で登録中' : '東部地域の情報を、あなたの手元に。';
-    document.getElementById('open-user').textContent=profile.saved ? '登録内容を確認' : '押すとユーザー登録';
+    document.getElementById('user-greeting').textContent=profile.saved ? (profile.area||'地区未選択')+' ／ 登録内容を変更できます' : '東部地域の情報を、あなたの手元に。';
+    document.getElementById('open-user').textContent=profile.saved ? window.ToubuPreferences.displayName(profile.name) : 'ユーザー登録はこちら';
+    document.getElementById('open-user').setAttribute('aria-label',profile.saved?window.ToubuPreferences.displayName(profile.name)+'の登録内容を確認・変更':'ユーザー登録はこちら');
+    window.ToubuProfilePhoto?.set(profile.photo||'');
     document.getElementById('user-name').value=typeof profile.name==='string' ? profile.name : '';
     document.getElementById('user-area').value=data.districts.concat('それ以外').includes(profile.area) ? profile.area : '';
     areaInput.value=data.districts.includes(profile.area) ? profile.area : '';
@@ -67,7 +69,7 @@
   var clearProfile=element('button','この端末の登録を解除','outline-link');clearProfile.type='button';clearProfile.id='clear-user';document.querySelector('.dialog-actions').appendChild(clearProfile);
   clearProfile.addEventListener('click',function(){try{localStorage.removeItem(profileKey);profile={};showProfile();selectedDay=null;renderMonth();document.getElementById('user-status').textContent='この端末の登録を解除しました。';}catch(e){document.getElementById('user-status').textContent='解除できませんでした。ブラウザの保存設定をご確認ください。';}});
   document.getElementById('user-form').addEventListener('submit',function (e) {
-    e.preventDefault(); var next={name:document.getElementById('user-name').value.trim(),area:document.getElementById('user-area').value,saved:true};
+    e.preventDefault(); if(window.ToubuProfilePhoto?.busy()){document.getElementById('user-status').textContent='写真の読み込みが終わるまでお待ちください。';return;} var next={photo:window.ToubuProfilePhoto?window.ToubuProfilePhoto.get():(profile.photo||''),name:document.getElementById('user-name').value.trim(),area:document.getElementById('user-area').value,saved:true};
     if(!next.name){document.getElementById('user-status').textContent='呼び名を入力してください。';return;}
     try {localStorage.setItem(profileKey,JSON.stringify(next));profile=next;showProfile();selectedDay=null;renderMonth();dialog.close();document.getElementById('open-user').focus();}
     catch (error) {document.getElementById('user-status').textContent='保存できませんでした。登録せずにそのまま情報を探せます。';}
@@ -111,8 +113,8 @@
       card.appendChild(badges);card.appendChild(element('h4',r.name));
       if(r.schedule.start)card.appendChild(element('p',r.schedule.start+(r.schedule.end?'〜'+r.schedule.end:'〜')));
       if(r.schedule.note)card.appendChild(element('p',r.schedule.note));
-      var dateLine=element('p',(selectedDay?[selectedDay]:item.dates).map(function(d){return window.ToubuPreferences.dateLabel(year,month,d);}).join('・'),'event-dates');card.appendChild(dateLine);
-      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=cb5083970522#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
+      var dateLine=element('ul','','event-dates');dateLine.setAttribute('aria-label','開催予定日');(selectedDay?[selectedDay]:item.dates).forEach(function(d){var line=element('li',''),date=element('time',window.ToubuPreferences.dateLabel(year,month,d));date.dateTime=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');line.appendChild(date);dateLine.appendChild(line);});card.appendChild(dateLine);
+      var a=element('a','場所・料金・連絡先を見る →','text-link');a.href='search.html?v=9815ff9fc8e7#?id='+encodeURIComponent(r.id);card.appendChild(a);list.appendChild(card);
     });
     if(!list.children.length)list.appendChild(element('p','この条件で日付を表示できる集まりはありません。日程が未定の集まりは、下のリンクから探せます。'));
     document.getElementById('month-more').hidden=list.children.length<=6;
