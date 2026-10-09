@@ -3,10 +3,11 @@
   if(!profile)return;
   let last=window.scrollY,travel=0,frame=0;
   const measure=()=>{
+    document.documentElement.style.setProperty('--header-space',header.getBoundingClientRect().height+'px');
     document.documentElement.style.setProperty('--profile-header-height',(profile.getBoundingClientRect().height+3)+'px');
     document.documentElement.style.setProperty('--app-header-height',(header.querySelector('.app-tabs').getBoundingClientRect().height+12)+'px');
   };
-  measure();new ResizeObserver(measure).observe(profile);
+  measure();new ResizeObserver(measure).observe(header);
   const update=()=>{
     frame=0;
     const y=Math.max(0,window.scrollY),delta=y-last;last=y;

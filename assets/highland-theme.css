@@ -21,7 +21,8 @@ html{scroll-padding-top:16px}.community-home section[id],.community-home h3[id]{
 .app-header .user-avatar circle:first-child{fill:#eef0e5;stroke:#b6c1a4}.app-header .user-avatar circle:nth-child(2),.app-header .user-avatar path{fill:#81916f}
 
 /* Keep section choices available; let the profile slide away as readers continue. */
-.community-home .app-header{position:sticky;top:0;z-index:45;transition:top .22s ease;box-shadow:0 2px 5px #294a3b12}
+.community-home{padding-top:var(--header-space,150px)}
+.community-home .app-header{position:fixed;inset:0 auto auto 50%;transform:translateX(-50%);top:0;z-index:45;transition:top .22s ease;box-shadow:0 2px 5px #294a3b12}
 .community-home .app-header.profile-collapsed{top:calc(-1 * var(--profile-header-height,100px))}
 
 html{scroll-padding-top:var(--app-header-height,68px)}
@@ -40,4 +41,4 @@ html{scroll-padding-top:var(--app-header-height,68px)}
 .photo-empty{background:#eef0e5;padding:20px;border-radius:6px}.photo-empty p{margin:0 0 12px}.photo-post-link{display:inline-block;margin-top:12px}
 .photo-grid:focus-visible,.photo-controls button:focus-visible{outline:3px solid #85603f;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.community-home .app-header{transition:none}.community-home .photo-grid{scroll-behavior:auto}}
-@media print{.community-home .app-header,.community-home .app-header.profile-collapsed{position:static;top:auto}.photo-controls,.photo-post-link{display:none}.community-home .photo-grid{display:block;overflow:visible}}
+@media print{.community-home{padding-top:0}.community-home .app-header,.community-home .app-header.profile-collapsed{position:static;top:auto;inset:auto;transform:none}.photo-controls,.photo-post-link{display:none}.community-home .photo-grid{display:block;overflow:visible}}
