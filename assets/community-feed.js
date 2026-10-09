@@ -15,7 +15,7 @@
     items.sort(window.ToubuPreferences.resources);
     document.getElementById('places-count').textContent=items.length+'件の通いの場';var list=document.getElementById('places-list');list.replaceChildren();
     if(!items.length)list.appendChild(node('p','該当する場所はありません。地区やキーワードを変えてお試しください。','empty-feed'));
-    items.forEach(function(r){var card=node('article','','place-card');card.appendChild(node('p',(r.areas||[]).join('・'),'photo-area'));card.appendChild(node('h2',r.name));if(r.schedule){var schedule=r.schedule;card.appendChild(node('p',scheduleLabel(schedule)));if(schedule.start)card.appendChild(node('p',schedule.start+(schedule.end?'〜'+schedule.end:'')));}card.appendChild(node('p',r.address||'場所は窓口へご確認ください。'));var link=node('a','詳しい内容・連絡先を見る →','text-link');link.href='search.html?v=3d8555a467be#?cat=tsudoi&id='+encodeURIComponent(r.id);card.appendChild(link);list.appendChild(card);});
+    items.forEach(function(r){var card=node('article','','place-card');card.appendChild(node('p',(r.areas||[]).join('・'),'photo-area'));card.appendChild(node('h2',r.name));if(r.schedule){var schedule=r.schedule;card.appendChild(node('p',scheduleLabel(schedule)));if(schedule.start)card.appendChild(node('p',schedule.start+(schedule.end?'〜'+schedule.end:'')));}card.appendChild(node('p',r.address||'場所は窓口へご確認ください。'));var link=node('a','詳しい内容・連絡先を見る →','text-link');link.href='search.html?v=76f993aea3ac#?cat=tsudoi&id='+encodeURIComponent(r.id);card.appendChild(link);list.appendChild(card);});
   }
   document.getElementById('places-search').addEventListener('submit',function(e){e.preventDefault();places();});
   document.getElementById('places-area').addEventListener('change',places);
