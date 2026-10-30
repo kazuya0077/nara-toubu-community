@@ -1,4 +1,6 @@
 /* Flyer browsing: clear controls, calm motion, and a reader that stays on the page. */
+.notice-track.is-auto-flowing{scroll-snap-type:none;scroll-behavior:auto}
+.notice-flow-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:14px 0 10px;color:#53634f;font-size:.85rem;line-height:1.7}.notice-flow-controls button{flex:none;min-height:46px;padding:10px 16px;border:1px solid #81916f;border-radius:24px;background:#fffef8;color:#315741;font:inherit;font-weight:700;cursor:pointer}.notice-flow-controls button:disabled{opacity:.6;cursor:default}.notice-flow-controls button:focus-visible{outline:3px solid #a36b2d;outline-offset:3px}@media(max-width:480px){.notice-flow-controls{align-items:flex-start;gap:10px;font-size:.8rem}.notice-flow-controls span{max-width:58%}.notice-flow-controls button{padding:9px 13px}}@media print{.notice-flow-controls{display:none}}
 .timeline-notices{--flyer-green:#315741;--flyer-line:#cbd4c5;--flyer-ease:cubic-bezier(.2,.7,.2,1)}
 .flyer-section-lead{color:#53634f;margin:0 0 18px;line-height:1.8}
 .flyer-demo-note{display:flex;gap:12px;align-items:flex-start;margin:16px 0 22px;padding:14px 18px;border:1px solid #d6c399;border-radius:12px;background:#faf1dc;color:#614a23;font-size:.9rem;line-height:1.7}
