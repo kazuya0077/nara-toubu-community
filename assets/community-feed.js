@@ -6,12 +6,15 @@
   var noticeTrack=document.getElementById('timeline-notice-track');
   if(noticeTrack){
     var noticePrevious=document.getElementById('notice-prev'),noticeNext=document.getElementById('notice-next'),noticePosition=document.getElementById('notice-position');
+    var noticeDots=node('div','','notice-dots');noticeDots.setAttribute('role','group');noticeDots.setAttribute('aria-label','お知らせを選ぶ');noticePosition.after(noticeDots);
     function noticeIndex(){var cards=Array.from(noticeTrack.children);return cards.reduce(function(best,card,i){return Math.abs(card.offsetLeft-cards[0].offsetLeft-noticeTrack.scrollLeft)<Math.abs(cards[best].offsetLeft-cards[0].offsetLeft-noticeTrack.scrollLeft)?i:best;},0);}
-    function syncNotices(){if(!noticeTrack.clientWidth)return;var index=noticeIndex();noticePrevious.disabled=index===0;noticeNext.disabled=index===noticeTrack.children.length-1;noticePosition.textContent=(index+1)+' / '+noticeTrack.children.length;}
-    function moveNotice(step){var index=Math.max(0,Math.min(noticeTrack.children.length-1,noticeIndex()+step));noticeTrack.scrollTo({left:noticeTrack.children[index].offsetLeft-noticeTrack.children[0].offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+    function syncNotices(){if(!noticeTrack.clientWidth)return;var index=noticeIndex(),count=noticeTrack.children.length;noticePrevious.disabled=!count||index===0;noticeNext.disabled=!count||index===count-1;noticePosition.textContent=count?(index+1)+' / '+count:'お知らせはありません';Array.from(noticeDots.children).forEach(function(dot,i){if(i===index)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');});Array.from(noticeTrack.children).forEach(function(card,i){card.classList.toggle('is-current',i===index);});}
+    function goNotice(index){var cards=noticeTrack.children;if(!cards.length)return;index=Math.max(0,Math.min(cards.length-1,index));noticeTrack.scrollTo({left:cards[index].offsetLeft-cards[0].offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+    function moveNotice(step){goNotice(noticeIndex()+step);}
+    function buildDots(){noticeDots.replaceChildren();Array.from(noticeTrack.children).forEach(function(card,i){var dot=node('button');dot.type='button';dot.setAttribute('aria-controls','timeline-notice-track');dot.setAttribute('aria-label',(i+1)+'件目：'+(card.querySelector('h3')||card).textContent);dot.appendChild(node('span','','notice-dot-mark'));dot.addEventListener('click',function(){goNotice(i);});noticeDots.appendChild(dot);});syncNotices();}
     noticePrevious.addEventListener('click',function(){moveNotice(-1);});noticeNext.addEventListener('click',function(){moveNotice(1);});
     noticeTrack.addEventListener('keydown',function(event){if(event.target!==noticeTrack)return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();moveNotice(event.key==='ArrowRight'?1:-1);}});
-    noticeTrack.addEventListener('scroll',syncNotices,{passive:true});new ResizeObserver(syncNotices).observe(noticeTrack);syncNotices();
+    noticeTrack.addEventListener('scroll',syncNotices,{passive:true});new ResizeObserver(syncNotices).observe(noticeTrack);new MutationObserver(buildDots).observe(noticeTrack,{childList:true});buildDots();
   }
   function getProfile(){try{return JSON.parse(localStorage.getItem('toubu.user-preferences.v1')||'{}')||{};}catch(e){return {};}}
   function isRegistered(){var p=getProfile();return p.saved===true&&typeof p.name==='string'&&!!p.name.trim();}
