@@ -2,6 +2,17 @@
   'use strict';
   var districts=window.TOUBU_DATA.districts;
   function node(tag,text,cls){var el=document.createElement(tag);if(text)el.textContent=text;if(cls)el.className=cls;return el;}
+  // Native horizontal scrolling keeps touch flicks and vertical page scrolling available.
+  var noticeTrack=document.getElementById('timeline-notice-track');
+  if(noticeTrack){
+    var noticePrevious=document.getElementById('notice-prev'),noticeNext=document.getElementById('notice-next'),noticePosition=document.getElementById('notice-position');
+    function noticeIndex(){var cards=Array.from(noticeTrack.children);return cards.reduce(function(best,card,i){return Math.abs(card.offsetLeft-cards[0].offsetLeft-noticeTrack.scrollLeft)<Math.abs(cards[best].offsetLeft-cards[0].offsetLeft-noticeTrack.scrollLeft)?i:best;},0);}
+    function syncNotices(){if(!noticeTrack.clientWidth)return;var index=noticeIndex();noticePrevious.disabled=index===0;noticeNext.disabled=index===noticeTrack.children.length-1;noticePosition.textContent=(index+1)+' / '+noticeTrack.children.length;}
+    function moveNotice(step){var index=Math.max(0,Math.min(noticeTrack.children.length-1,noticeIndex()+step));noticeTrack.scrollTo({left:noticeTrack.children[index].offsetLeft-noticeTrack.children[0].offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+    noticePrevious.addEventListener('click',function(){moveNotice(-1);});noticeNext.addEventListener('click',function(){moveNotice(1);});
+    noticeTrack.addEventListener('keydown',function(event){if(event.target!==noticeTrack)return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();moveNotice(event.key==='ArrowRight'?1:-1);}});
+    noticeTrack.addEventListener('scroll',syncNotices,{passive:true});new ResizeObserver(syncNotices).observe(noticeTrack);syncNotices();
+  }
   function getProfile(){try{return JSON.parse(localStorage.getItem('toubu.user-preferences.v1')||'{}')||{};}catch(e){return {};}}
   function isRegistered(){var p=getProfile();return p.saved===true&&typeof p.name==='string'&&!!p.name.trim();}
   function syncRegistration(){var p=getProfile(),registered=isRegistered();document.getElementById('timeline-registration').hidden=registered;document.getElementById('timeline-member-content').hidden=!registered;document.getElementById('timeline-name').value=registered?p.name:'';document.getElementById('timeline-area').value=districts.includes(p.area)?p.area:'';document.getElementById('places-area').value=districts.includes(p.area)?p.area:'';places();if(!registered){document.getElementById('timeline-list').replaceChildren();}else render();}
@@ -15,7 +26,7 @@
     items.sort(window.ToubuPreferences.resources);
     document.getElementById('places-count').textContent=items.length+'件の通いの場';var list=document.getElementById('places-list');list.replaceChildren();
     if(!items.length)list.appendChild(node('p','該当する場所はありません。地区やキーワードを変えてお試しください。','empty-feed'));
-    items.forEach(function(r){var card=node('article','','place-card');card.appendChild(node('p',(r.areas||[]).join('・'),'photo-area'));card.appendChild(node('h2',r.name));if(r.schedule){var schedule=r.schedule;card.appendChild(node('p',scheduleLabel(schedule)));if(schedule.start)card.appendChild(node('p',schedule.start+(schedule.end?'〜'+schedule.end:'')));}card.appendChild(node('p',r.address||'場所は窓口へご確認ください。'));var link=node('a','詳しい内容・連絡先を見る →','text-link');link.href='search.html?v=6c0511d69ef7#?cat=tsudoi&id='+encodeURIComponent(r.id);card.appendChild(link);list.appendChild(card);});
+    items.forEach(function(r){var card=node('article','','place-card');card.appendChild(node('p',(r.areas||[]).join('・'),'photo-area'));card.appendChild(node('h2',r.name));if(r.schedule){var schedule=r.schedule;card.appendChild(node('p',scheduleLabel(schedule)));if(schedule.start)card.appendChild(node('p',schedule.start+(schedule.end?'〜'+schedule.end:'')));}card.appendChild(node('p',r.address||'場所は窓口へご確認ください。'));var link=node('a','詳しい内容・連絡先を見る →','text-link');link.href='search.html?v=a3e1ddcb9658#?cat=tsudoi&id='+encodeURIComponent(r.id);card.appendChild(link);list.appendChild(card);});
   }
   document.getElementById('places-search').addEventListener('submit',function(e){e.preventDefault();places();});
   document.getElementById('places-area').addEventListener('change',places);
